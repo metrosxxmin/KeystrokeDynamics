@@ -22,12 +22,15 @@ class KeyGraph:
                         return True
         return False
 
-    def isRange(self, i, j):
+    def _isRange(self, i, j):
          if i < 0 or i >= len(self.graph):
              return False
          if j < 0 or j >= len(self.graph[i]):
              return False
          return True
+
+    def getGraph(self):
+        return self.graph
 
 
 # for module testing.
