@@ -1,58 +1,81 @@
-import numpy as np
-from keyboard import record
+from keyboard import record as recording
+from time import sleep
+
 
 class KeyRecord:
-
     def __init__(self):
         self.names = ['./']
         self.times = []
 
-    def record(self):
-        recorded = record(until='enter')
+    def record(self, records):
+        names = []
+        times = []
 
-        t0 = recorded[0].time
+        if records[0].name == 'enter' and records[0].event_type == 'up':
+            records = records[1:]
 
-        # except enter
-        for i in range(len(recorded) - 1):
-            if recorded[i].event_type == 'down':
-                if recorded[i].name == 'space':
-                    recorded[i].name = ' '
-                if recorded[i].name == 'shift':
-                    if i != 0 and recorded[i - 1].name == 'shift':
+        t0 = records[0].time
+        # cause leaf element is enter, not check.
+        for i in range(len(records) - 1):
+            if records[i].event_type == 'down':
+                if records[i].name == 'space':
+                    records[i].name = ' '
+                if records[i].name == 'shift':
+                    if i != 0 and records[i - 1].name == 'shift':
                         times = times[:-1]
                         continue
                     else:
-                        recorded[i].name = ''
+                        records[i].name = ''
 
-                if recorded[i].name == 'backspace':
+                if records[i].name == 'backspace':
                     times = times[:-1]
                     names = names[:-1]
 
-                if recorded[i].name == 'delete':
+                if records[i].name == 'delete':
                     times = times[:-1]
                     names = names[:-1]
 
                 else:
-                    times.append(recorded[i].time - t0)
-                    names.append(recorded[i].name)
+                    times.append(records[i].time - t0)
+                    names.append(records[i].name)
 
         name = ''.join(names)
-        np.save(name, times)
+
+        self.times = times
+        self.names = name
+
+        return times, name
 
     def getNames(self):
-        pass
+        return self.names
 
     def getTimes(self):
-        pass
+        return self.times
 
-    def getTotaltimes(self):
-        pass
+    def getTotaltimes(self, x):
+        return x[-1] - x[0]
 
 
 # for module testing.
 if __name__ == "__main__":
     kr = KeyRecord()
-    kr.record()
-    print(kr.names)
-    print(kr.times)
-    print(len(kr.times))
+    print("Test Line input")
+    print("[ID] : ")
+    ID_data = recording(until='enter')
+    sleep(0.5)
+    T, N = kr.record(ID_data)
+
+    print(T)
+    print(N)
+
+    print("[PW] : ")
+    PW_data = recording(until='enter')
+    sleep(0.5)
+    T, N = kr.record(PW_data)
+
+    print(T)
+    print(N)
+
+    print(kr.names == N)
+    print(kr.times == T)
+    print(kr.getTotaltimes(T) == (T[-1] - T[0]))
