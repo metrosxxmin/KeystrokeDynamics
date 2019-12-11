@@ -1,5 +1,4 @@
 
-
 class KeyGraph:
     def __init__(self):
         self.di = [1, 0, -1, 1, 0, -1, 1, 0, -1]
@@ -18,7 +17,7 @@ class KeyGraph:
                     ni = i + self.di[k]
                     nj = j + self.dj[k]
 
-                    if self.isRange(ni, nj) and self.graph[ni][nj] == _next:
+                    if self._isRange(ni, nj) and self.graph[ni][nj] == _next:
                         return True
         return False
 
