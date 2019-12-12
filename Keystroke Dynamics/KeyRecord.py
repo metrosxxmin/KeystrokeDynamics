@@ -1,6 +1,6 @@
 from keyboard import record as recording
 from time import sleep
-
+import numpy as np
 
 class KeyRecord:
     def __init__(self):
@@ -44,7 +44,7 @@ class KeyRecord:
         self.times = times
         self.names = name
 
-        return times, name
+        return np.array(times), name
 
     def getNames(self):
         return self.names

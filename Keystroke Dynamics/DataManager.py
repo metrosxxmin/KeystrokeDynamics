@@ -2,10 +2,9 @@ import numpy as np
 from time import time
 import csv
 from glob import glob
-from os import remove
-from KeyRecord import KeyRecord
-import Login
 from keyboard import record as recording
+from KeyRecord import KeyRecord
+
 
 class DataManager:
     def __init__(self, _datapath, _tagname):
@@ -13,12 +12,12 @@ class DataManager:
         self.tagname = _tagname
 
     def loadData(self):
-
         patterns = glob(self.datapath + '*.csv')
-        X = np.zeros((len(patterns), 13))   # tmp value : 13
+        #X = np.zeros((len(patterns), 8))  # tmp value : 8
         # self.n_current = len(patterns)
         # self.n_valid = int(self.n_current * 0.3)
-        # X = np.zeros((self.n_current, self.n_pattern))
+        #X = np.zeros((len(patterns), self.n_pattern))
+        X = []
 
         for i in range(len(patterns)):
             x = []
@@ -27,9 +26,9 @@ class DataManager:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     x.append(row['times'])
-            X[i] = x
+            X.append(x)
         # X = X[:,:2]
-        return X
+        return np.array(X)
 
     def upDate(self, times):
         file_name = str(int(time()))
@@ -60,8 +59,7 @@ class DataManager:
     def setTagname(self, _tagname):
         self.tagname = _tagname
 
-
-    def _preprocess(self, x):
+    def preprocess(self, x):
         if len(x.shape) == 1:
             x_copy = np.zeros(len(x) - 1)
             for i in range(len(x) - 1, 0, -1):
@@ -84,8 +82,14 @@ if __name__ == "__main__":
     user1 = DataManager(PATH_STORE_SOOMIN, "soomin.txt")
 
     kr = KeyRecord()
-
-    res = user1.loadData()
-
-    print(res)
-
+    kr2= KeyRecord()
+    for i in range(0, 20):
+        kr.record(recording(until='enter'))
+        kr2.record(recording(until='enter'))
+        X = user1.preprocess(np.array(kr.times))
+        X = np.hstack([X, user1.preprocess(np.array(kr2.times))])
+        X = np.hstack([X, kr.times])
+        X = np.hstack([X, kr2.times])
+        X = np.hstack([X, kr.getTotaltimes()])
+        X = np.hstack([X, kr2.getTotaltimes()])
+        user1.upDate(X)
