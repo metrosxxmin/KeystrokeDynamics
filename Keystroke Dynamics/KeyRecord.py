@@ -61,9 +61,8 @@ if __name__ == "__main__":
     kr = KeyRecord()
     print("Test Line input")
     print("[ID] : ")
-    ID_data = recording(until='enter')
+    T, N = kr.record(recording(until='enter'))
     sleep(0.5)
-    T, N = kr.record(ID_data)
 
     print(T)
     print(N)
@@ -76,6 +75,6 @@ if __name__ == "__main__":
     print(T)
     print(N)
 
-    print(kr.names == N)
-    print(kr.times == T)
-    print(kr.getTotaltimes(T) == (T[-1] - T[0]))
+    print(kr.names is N)
+    print(kr.times is T)
+    print(kr.getTotaltimes(T) is (T[-1] - T[0]))
