@@ -4,8 +4,8 @@ from time import sleep
 
 class KeyRecord:
     def __init__(self):
-        self.names = ['./']
-        self.times = []
+        self.names = None
+        self.times = None
 
     def record(self, records):
         names = []
@@ -52,8 +52,8 @@ class KeyRecord:
     def getTimes(self):
         return self.times
 
-    def getTotaltimes(self, x):
-        return x[-1] - x[0]
+    def getTotaltimes(self):
+        return self.times[-1] - self.times[0]
 
 
 # for module testing.
@@ -77,4 +77,4 @@ if __name__ == "__main__":
 
     print(kr.names is N)
     print(kr.times is T)
-    print(kr.getTotaltimes(T) is (T[-1] - T[0]))
+    print(kr.getTotaltimes() is (T[-1] - T[0]))
