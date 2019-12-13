@@ -4,6 +4,7 @@ import csv
 from glob import glob
 from keyboard import record as recording
 from KeyRecord import KeyRecord
+from os import remove
 
 
 class DataManager:
@@ -13,10 +14,6 @@ class DataManager:
 
     def loadData(self):
         patterns = glob(self.datapath + '*.csv')
-        #X = np.zeros((len(patterns), 8))  # tmp value : 8
-        # self.n_current = len(patterns)
-        # self.n_valid = int(self.n_current * 0.3)
-        #X = np.zeros((len(patterns), self.n_pattern))
         X = []
 
         for i in range(len(patterns)):
@@ -27,7 +24,6 @@ class DataManager:
                 for row in reader:
                     x.append(row['times'])
             X.append(x)
-        # X = X[:,:2]
         return np.array(X)
 
     def upDate(self, times):
@@ -40,12 +36,10 @@ class DataManager:
             for i in range(len(times)):
                 writer.writerow({'times': times[i]})
 
-        # if self.n_patterns is self.n_current:
-        #     patterns = glob(self.file_path + '*.csv')
-        #     patterns.sort()
-        #     if self.debug:
-        #         print('[debug] remove ', patterns[0])
-        #     remove(patterns[0])
+        if len(glob(self.datapath + '*.csv')) > 20:
+            patterns = glob(self.datapath + '*.csv')
+            patterns.sort()
+            remove(patterns[0])
 
     def getFilepath(self):
         return self.datapath

@@ -1,15 +1,10 @@
 import numpy as np
+from time import sleep
 from keyboard import record as recording
 from DataManager import DataManager
 from KeyRecord import KeyRecord
 from glob import glob
-from time import time
-from os import remove, system
-import sys
-import csv
 from KeyGraph import KeyGraph
-from sklearn import mixture
-#from DataManager import DataManager
 
 
 class Login:
@@ -35,10 +30,10 @@ class Login:
         while True:
             print("[id]: ")
             info_id.record(recording(until='enter'))
-
+            sleep(1)
             print("\n[pw]: ")
             info_pw.record(recording(until='enter'))
-
+            sleep(1)
             f = open(userID.datapath + userID.tagname)
             ID_line = f.readline()
             ID_line = ID_line.replace("\n", "")
@@ -80,12 +75,11 @@ class Login:
         yp = yp.astype(Xp.dtype)
 
         if self.getNcurrent() < int(self.getNpatterns() * 0.5):
-            print("data가 충분치 않습니다")
+            print("data is not enough. Judge only user input seq.")
             return True
 
         score = 0
         weights = self.getWeight(Xp)
-        # weights = np.ones(yp.shape)/len(yp)
 
         for i in range(self.getNcurrent() - self.getNvalid(), self.getNcurrent()):
             med_score, _ = self._getDifference(Xp[:-self.getNvalid()], Xp[i], weights=weights)
@@ -133,90 +127,12 @@ class Login:
         self.threshold = _threshold
 
 
-
-
-
-# def validation(train_path, test_paths, debug=True, threshold=1.5):
-#     k1 = Login(train_path, threshold=threshold, debug=False, n_patterns=20, update=False)
-#
-#     score = 0
-#     total = 0
-#
-#     score1 = 0
-#     total1 = 0
-#
-#     score2 = 0
-#     total2 = 0
-#
-#     test_paths = glob(test_paths + "**/")
-#     for test_path in test_paths:
-#         f = open(test_path + "answer.txt", 'r')
-#         label = bool(f.readline().replace('\n', ''))
-#
-#         f.close()
-#
-#         csv_paths = glob(test_path + "*.csv")
-#
-#         for csv_path in csv_paths:
-#
-#             y = []
-#             with open(csv_path, newline='') as csvfile:
-#                 reader = csv.DictReader(csvfile)
-#                 for row in reader:
-#                     y.append(row['times'])
-#
-#             xlabel = k1.login(y)
-#             if label:
-#                 if xlabel:
-#                     score += 1
-#                     score1 += 1
-#                 total1 += 1
-#             else:
-#                 if xlabel:
-#                     score2 += 1
-#                 else:
-#                     score += 1
-#                 total2 += 1
-#             total += 1
-#             if debug:
-#                 print("ans:", label, "guess:", xlabel)
-#                 print(score, total)
-#                 print()
-#     return score / total, score1 / total1, score2 / total2
-
-
-
-
 if __name__ == '__main__':
     PATH_STORE_SOOMIN = "/Users/sxxmin/github/Keystroke/Keystroke Dynamics/soomin/"
     userID = DataManager(PATH_STORE_SOOMIN, "soomin.txt")
     info_id = KeyRecord()
     info_pw = KeyRecord()
-    login = Login(20, 1.5, True)
+    login = Login(20, 1.45, True)
 
     login.typingCheck()
-
-
-    # train = "/Users/sxxmin/PycharmProjects/KeystrokeDynamics/train/"
-    # test = "/Users/sxxmin/PycharmProjects/KeystrokeDynamics/test2/"
-    #
-    # ret, ret1, ret2 = validation(train, test, threshold=1.0, debug=False)
-    # print("성공률:", ret)
-    #
-    # min_thres = 1.40
-    # max_thres = 1.80
-    # n = 40
-    # for i in range(n):
-    #     threshold = min_thres + (max_thres - min_thres) * i / n
-    #     ret, ret1, ret2 = validation(train, test, threshold=threshold, debug=False)
-    #     print("성공률:", ret, threshold)
-    # # print("jh 성공률:",ret1)
-    # # print("yt 성공률:",ret2)
-    #
-    # '''
-    # k1 = KeyStroke('./test/yt/',debug = True,n_patterns = 40,update = True)
-    # while True:
-    #     k1.login()
-    #     sys.stdout.flush()
-    # '''
 
